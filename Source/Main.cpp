@@ -16,7 +16,6 @@ class InstallerApplication  : public juce::JUCEApplication
 {
 public:
     //==============================================================================
-    InstallerApplication() {}
 
     const juce::String getApplicationName() override       { return ProjectInfo::projectName; }
     const juce::String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -25,11 +24,10 @@ public:
     //==============================================================================
     void initialise (const juce::String& commandLine) override
     {
-        // This method is where you should put your application's initialisation code..
-
         mainWindow.reset (new MainWindow (getApplicationName()));
         mainWindow->setContentOwned(new MainComponent(), true);
     }
+
 
     void shutdown() override
     {
@@ -51,6 +49,8 @@ public:
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
+
+        quit();
     }
 
     //============================================================================================================================================
@@ -59,6 +59,13 @@ public:
     class CustomLookAndFeel : public juce::LookAndFeel_V4
     {
     public:
+
+        static const juce::Font& getFuturaFont()
+        {
+            static juce::Font futura(juce::Font(juce::Typeface::createSystemTypefaceFor(BinaryData::FuturaStdCondensed_otf,
+                BinaryData::FuturaStdCondensed_otfSize)));
+            return futura;
+        }
 
         // Style the close button here, then create a new instance of it in the createDocumentWindowButton() method
         class CustomCloseButton : public juce::Button, private juce::Timer
@@ -71,8 +78,10 @@ public:
 
             void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
             {
+                g.setColour(currentBackground);
+                g.fillRect(0, 0, 40, 40); // Draw the background square
                 g.setColour(currentColour);
-                g.setFont(juce::Font("Arial", "Bold", 18.0f));
+                g.setFont(juce::Font("Arial", "Regular", 22.0f));
                 g.drawText("X", getLocalBounds(), juce::Justification::centred, true);
             }
 
@@ -80,46 +89,43 @@ public:
             {
                 // Update the color
                 currentColour = currentColour.interpolatedWith(targetColour, 0.2f);
+                currentBackground = currentBackground.interpolatedWith(targetBackground, 0.2f);
                 repaint();
             }
 
             void mouseEnter(const juce::MouseEvent&) override
             {
                 targetColour = juce::Colour(0xffd2d2d2); // Highlighted color
+                targetBackground = juce::Colour(0x10ffffff); // Highlighted color
             }
 
             void mouseExit(const juce::MouseEvent&) override
             {
                 targetColour = juce::Colour(0xffbababa); // Mouse off color
+                targetBackground = juce::Colour(0x0000000); // Mouse off color
             }
 
             void mouseDown(const juce::MouseEvent& event) override
             {
                 targetColour = juce::Colour(0xffe9e9e9); // Down color
+                targetBackground = juce::Colour(0x20ffffff); // Down color
                 Button::mouseDown(event); // Pass the event to the parent class
             }
 
             void mouseUp(const juce::MouseEvent& event) override
             {
                 targetColour = juce::Colour(0xffd2d2d2); // Highlighted color
+                targetBackground = juce::Colour(0x10ffffff); // Highlighted color
                 Button::mouseUp(event); // Pass the event to the parent class
             }
 
         private:
             juce::Colour currentColour = juce::Colour(0xffbababa); // Initial color
             juce::Colour targetColour = juce::Colour(0xffbababa); // Initial target color
+            juce::Colour currentBackground = juce::Colour(0x00000000); // Initial background color
+            juce::Colour targetBackground = juce::Colour(0x00000000); // Initial target background color
         };
 
-        void drawDocumentWindowTitleBar(juce::DocumentWindow& window, juce::Graphics& g,
-            int w, int h, int titleSpaceX, int titleSpaceW,
-            const juce::Image* icon, bool drawTitleTextOnLeft) override
-        {
-            // Here you can customize the title bar. You can use the Graphics object to draw your custom title bar.
-            //draw custom title bar
-
-            // Call the base class implementation if you want to keep the default look and feel
-            LookAndFeel_V4::drawDocumentWindowTitleBar(window, g, w, h, titleSpaceX, titleSpaceW, icon, drawTitleTextOnLeft);
-        }
 
         juce::Button* createDocumentWindowButton(int buttonType) override
         {
@@ -156,8 +162,7 @@ public:
     public:
         MainWindow (juce::String name)
             : DocumentWindow (name,
-                              juce::Desktop::getInstance().getDefaultLookAndFeel()
-                                                          .findColour (juce::ResizableWindow::backgroundColourId),
+                              juce::Colour(0xff222222),
                               DocumentWindow::closeButton)
         {
             setUsingNativeTitleBar (false);
