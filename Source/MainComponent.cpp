@@ -1,4 +1,5 @@
 #include "MainComponent.h"
+#include "CustomLookAndFeel.h"
 
 //==============================================================================
 MainComponent::MainComponent()
@@ -16,9 +17,19 @@ void MainComponent::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(juce::Colour(0xff222222));
 
-    g.setFont (juce::Font (16.0f));
-    g.setColour (juce::Colours::white);
-    g.drawText ("Hello World2!", getLocalBounds(), juce::Justification::centred, true);
+    g.setColour(juce::Colours::white);
+
+    // Create a Typeface from the binary data
+    juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::FuturaStdCondensed_otf, BinaryData::FuturaStdCondensed_otfSize);
+
+    // Create a Font from the Typeface
+    juce::Font font(typeface);
+
+    // Use the font
+    g.setFont(font.withPointHeight(20.0f));
+
+    // Now you can draw text with your custom font
+    g.drawText("Hello, World!", getLocalBounds(), juce::Justification::centred, true);
 }
 
 void MainComponent::resized()
