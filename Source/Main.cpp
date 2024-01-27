@@ -1,11 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic startup code for a JUCE application.
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
 #include "MainComponent.h"
 #include "CustomLookAndFeel.h"
@@ -16,11 +8,27 @@
 
 // Assuming Info is a class that can be constructed from a var object
 class Info {
-    // ...
 public:
-    Info(const juce::var& v) {
-        // Initialize your object from the var data
+    Info(const juce::var& jsonData)
+        : jsonData(jsonData)
+    {
     }
+
+    juce::String getProject() const {
+        return jsonData.getProperty("Project", "Unknown");
+    }
+
+    juce::String getVersion() const {
+        return jsonData.getProperty("Version", "Unknown");
+    }
+
+    juce::String getCompany() const {
+        return jsonData.getProperty("Company", "Unknown");
+    }
+
+    juce::var jsonData;
+private:
+    
 };
 
 // Load the Info object from the zip file and return it
@@ -36,17 +44,23 @@ Info loadInfo() {
 
         int index = zip.getIndexOfFileName("Info.json");
         if (index < 0) {
-            throw std::runtime_error("Could not find Info.json in zip file");
+            throw std::runtime_error("Could not find Info.json in zip file.");
         }
 
         std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(index));
         if (!stream) {
-            throw std::runtime_error("Could not create stream for Info.json");
+            throw std::runtime_error("Could not create stream for Info.json.");
         }
 
         juce::var jsonData = juce::JSON::parse(*stream);
         if (!jsonData.isObject()) {
-            throw std::runtime_error("Invalid JSON data in Info.json");
+            throw std::runtime_error("Invalid JSON data in Info.json.");
+        }
+
+        // Check that the JSON data contains the required properties
+        juce::DynamicObject* json = jsonData.getDynamicObject();
+        if (!json->hasProperty("Project") || !json->hasProperty("Company") || !json->hasProperty("Version")) {
+            throw std::runtime_error("Invalid JSON data in Info.json: Missing Project, Company, or Version property.");
         }
 
         return Info(jsonData);
@@ -78,6 +92,21 @@ public:
         try {
             Info info = loadInfo();
             // Now you can use the info object
+
+            // Get the Project, Version, and Company properties from the Info object
+            juce::String project = info.jsonData.getProperty("Project", "Unknown");
+            juce::String version = info.jsonData.getProperty("Version", "Unknown");
+            juce::String company = info.jsonData.getProperty("Company", "Unknown");
+
+            // Set the title of the MainWindow
+            juce::String title = "Installer for " + project + " by " + company + " (" + version + ")";
+            mainWindow->setName(title);
+
+            // Check for Plugins.dat
+            juce::File pluginsFile = juce::File::getSpecialLocation(juce::File::currentApplicationFile).getParentDirectory().getChildFile("Plugins.dat");
+            if (!pluginsFile.exists()) {
+                throw std::runtime_error("Plugins.dat not found.");
+            }
         }
         catch (const std::runtime_error& e) {
             // Handle error
