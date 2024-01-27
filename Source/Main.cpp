@@ -13,6 +13,52 @@
 //============================================================================================================================================
 //============================================================================================================================================
 //============================================================================================================================================
+
+// Assuming Info is a class that can be constructed from a var object
+class Info {
+    // ...
+public:
+    Info(const juce::var& v) {
+        // Initialize your object from the var data
+    }
+};
+
+// Load the Info object from the zip file and return it
+// Use this to get Project name, Company name, Version etc.
+Info loadInfo() {
+    juce::File appDirectory = juce::File::getSpecialLocation(juce::File::currentApplicationFile).getParentDirectory();
+    juce::File configFile = appDirectory.getChildFile("Config.dat");
+
+    DBG("Looking for Config.dat at: " << configFile.getFullPathName());
+
+    if (configFile.exists()) {
+        juce::ZipFile zip(configFile);
+
+        int index = zip.getIndexOfFileName("Info.json");
+        if (index < 0) {
+            throw std::runtime_error("Could not find Info.json in zip file");
+        }
+
+        std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(index));
+        if (!stream) {
+            throw std::runtime_error("Could not create stream for Info.json");
+        }
+
+        juce::var jsonData = juce::JSON::parse(*stream);
+        if (!jsonData.isObject()) {
+            throw std::runtime_error("Invalid JSON data in Info.json");
+        }
+
+        return Info(jsonData);
+    }
+    else {
+        throw std::runtime_error("Config.dat not found");
+    }
+}
+
+//============================================================================================================================================
+
+
 class InstallerApplication  : public juce::JUCEApplication
 {
 public:
@@ -23,10 +69,20 @@ public:
     bool moreThanOneInstanceAllowed() override             { return true; }
 
     //==============================================================================
-    void initialise (const juce::String& commandLine) override
+    void initialise(const juce::String& commandLine) override
     {
-        mainWindow.reset (new MainWindow (getApplicationName()));
-        mainWindow->setContentOwned(new MainComponent(), true);
+        mainWindow.reset(new MainWindow(getApplicationName()));
+        auto mainComponent = new MainComponent();
+        mainWindow->setContentOwned(mainComponent, true);
+
+        try {
+            Info info = loadInfo();
+            // Now you can use the info object
+        }
+        catch (const std::runtime_error& e) {
+            // Handle error
+            mainComponent->setMessage(e.what());
+        }
     }
 
 
@@ -35,6 +91,10 @@ public:
         // Add your application's shutdown code here..
 
         mainWindow = nullptr; // (deletes our window)
+
+        // Pause the application before it exits
+        std::cout << "Press enter to exit...";
+        std::cin.get();
     }
 
     //==============================================================================
@@ -53,13 +113,6 @@ public:
 
         quit();
     }
-
-    //============================================================================================================================================
-
-    
-
-
-
 
     //============================================================================================================================================
     /*
@@ -111,6 +164,10 @@ public:
 private:
     std::unique_ptr<MainWindow> mainWindow;
 };
+
+
+//============================================================================================================================================
+
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.

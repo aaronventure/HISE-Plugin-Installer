@@ -2,9 +2,12 @@
 #include "CustomLookAndFeel.h"
 
 //==============================================================================
+
 MainComponent::MainComponent()
 {
-    setSize (900, 300);
+    addAndMakeVisible(messageLabel);
+    messageLabel.setJustificationType(juce::Justification::centred);
+    setSize(900, 300);
 }
 
 MainComponent::~MainComponent()
@@ -12,6 +15,7 @@ MainComponent::~MainComponent()
 }
 
 //==============================================================================
+
 void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
@@ -20,7 +24,7 @@ void MainComponent::paint (juce::Graphics& g)
     g.setColour(juce::Colours::white);
 
     // Create a Typeface from the binary data
-    juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::FuturaStdCondensed_otf, BinaryData::FuturaStdCondensed_otfSize);
+    juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(GlobalFontData::Controls, GlobalFontData::ControlsSize);
 
     // Create a Font from the Typeface
     juce::Font font(typeface);
@@ -29,12 +33,21 @@ void MainComponent::paint (juce::Graphics& g)
     g.setFont(font.withPointHeight(20.0f));
 
     // Now you can draw text with your custom font
-    g.drawText("Hello, World!", getLocalBounds(), juce::Justification::centred, true);
+    g.drawText("", getLocalBounds(), juce::Justification::centred, true);
 }
 
 void MainComponent::resized()
 {
-    // This is called when the MainComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
+    messageLabel.setBounds(getLocalBounds());
 }
+
+void MainComponent::setMessage(const juce::String& message)
+{
+    messageLabel.setText(message, juce::dontSendNotification);
+
+    // Create a Typeface from the binary data and apply it to the label
+    juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(GlobalFontData::Controls, GlobalFontData::ControlsSize);
+    juce::Font font(typeface);
+    messageLabel.setFont(font.withPointHeight(30.0f));
+}
+

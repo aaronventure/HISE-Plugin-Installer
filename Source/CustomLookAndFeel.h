@@ -10,6 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "GlobalFontData.h"
 
 // Custom graphics are done here
 class CustomLookAndFeel : public juce::LookAndFeel_V4
@@ -27,7 +28,7 @@ public:
         g.fillAll(juce::Colour(0xff222222)); // Example color
 
         // Create a Typeface from the binary data
-        juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::FuturaStdCondensed_otf, BinaryData::FuturaStdCondensed_otfSize);
+        juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(GlobalFontData::Controls, GlobalFontData::ControlsSize);
 
         // Create a Font from the Typeface
         juce::Font font(typeface);

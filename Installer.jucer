@@ -4,15 +4,29 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="BMrlsu" name="Installer">
     <GROUP id="{37647F3A-7926-0AC3-311F-44A552975EAE}" name="BinaryData">
+      <FILE id="KclXSc" name="AdventProMedium.ttf" compile="0" resource="1"
+            file="Fonts/AdventProMedium.ttf"/>
+      <FILE id="aIjOgA" name="EconomicaRegular.ttf" compile="0" resource="1"
+            file="Fonts/EconomicaRegular.ttf"/>
       <FILE id="Nm3aaS" name="FuturaStdCondensed.otf" compile="0" resource="1"
             file="Fonts/FuturaStdCondensed.otf"/>
       <FILE id="cEBrHp" name="FuturaStdMedium.otf" compile="0" resource="1"
             file="Fonts/FuturaStdMedium.otf"/>
+      <FILE id="oY95gO" name="MatamataRegular.otf" compile="0" resource="1"
+            file="Fonts/MatamataRegular.otf"/>
+      <FILE id="tV9MRp" name="SairaExtraCondensedRegular.ttf" compile="0"
+            resource="1" file="Fonts/SairaExtraCondensedRegular.ttf"/>
+      <FILE id="jMturc" name="SairaExtraCondensedSemiBold.ttf" compile="0"
+            resource="1" file="Fonts/SairaExtraCondensedSemiBold.ttf"/>
     </GROUP>
     <GROUP id="{D7CF8E01-B071-D9D0-A595-EDC9B9AE8093}" name="Source">
+      <FILE id="z6VFfK" name="GlobalFontData.h" compile="0" resource="0"
+            file="Source/GlobalFontData.h"/>
       <FILE id="x056gY" name="CustomLookAndFeel.h" compile="0" resource="0"
             file="Source/CustomLookAndFeel.h"/>
       <FILE id="iYPn1s" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="BR2Le3" name="GlobalFontData.cpp" compile="1" resource="0"
+            file="Source/GlobalFontData.cpp"/>
       <FILE id="n6uLCA" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="hRqJg7" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
