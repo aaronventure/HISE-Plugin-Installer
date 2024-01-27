@@ -16,6 +16,42 @@ class CustomLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
 
+    void drawDocumentWindowTitleBar(juce::DocumentWindow& window,
+        juce::Graphics& g,
+        int w, int h,
+        int titleSpaceX, int titleSpaceW,
+        const juce::Image* icon,
+        bool drawTitleTextOnLeft) override
+    {
+        // Fill the title bar background
+        g.fillAll(juce::Colour(0xff222222)); // Example color
+
+        // Create a Typeface from the binary data
+        juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(BinaryData::FuturaStdCondensed_otf, BinaryData::FuturaStdCondensed_otfSize);
+
+        // Create a Font from the Typeface
+        juce::Font font(typeface);
+
+        // Use the font
+        g.setFont(font.withPointHeight(18.0f));
+
+
+        g.setColour(juce::Colours::white); // Choose an appropriate text color
+
+        // Retrieve the title of the window
+        juce::String title = window.getName();
+
+        // Set the area where the title will be drawn
+        juce::Rectangle<int> textArea(0, 0, window.getWidth(), h);
+
+        // Draw the title text
+        g.drawText(title, textArea, juce::Justification::centred, true);
+
+        // Temporarily draw the text area for debugging
+        //g.setColour(juce::Colours::red);
+        //g.drawRect(textArea); 
+    }
+
     // Style the close button here, then create a new instance of it in the createDocumentWindowButton() method
     class CustomCloseButton : public juce::Button, private juce::Timer
     {
