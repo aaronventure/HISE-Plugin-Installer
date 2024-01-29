@@ -45,7 +45,7 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022" extraDefs="JUCE_DISPLAY_SPLASH_SCREEN=0"
+    <VS2022 targetFolder="Builds/VisualStudio2022" extraDefs="JUCE_DISPLAY_SPLASH_SCREEN=0&#10;JUCE_MODAL_LOOPS_PERMITTED=1"
             smallIcon="QI0RDg" bigIcon="QI0RDg">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="Installer"/>

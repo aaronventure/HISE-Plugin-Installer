@@ -1,6 +1,7 @@
 #include <JuceHeader.h>
 #include "MainComponent.h"
 #include "CustomLookAndFeel.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 //============================================================================================================================================
 //============================================================================================================================================
@@ -140,6 +141,11 @@ public:
             appDirectory.findChildFiles(results, juce::File::findFiles, false, "*Samples*.dat");
             appDirectory.findChildFiles(results, juce::File::findFiles, false, "*samples*.dat");
 
+
+            // Get the width and height of the UI
+            int uiWidth = mainComponent->getWidth();
+            int uiHeight = mainComponent->getHeight();
+
             // Initialize hasSamples to 0
             int hasSamples = 0;
 
@@ -158,20 +164,49 @@ public:
                 directorySelectButtonLAF = new DirectorySelectButtonLookAndFeel(currentPath);
                 installButtonLAF = new InstallButtonLookAndFeel();
 
-                // Get the width and height of the UI
-                int uiWidth = mainComponent->getWidth();
-                int uiHeight = mainComponent->getHeight();
 
                 // Create a button to select the directory
-                mainComponent->createAndDisplayButton("DirectorySelect", 100, 50, uiWidth-200, 40, directorySelectButtonLAF);
+                directorySelectButton = mainComponent->createAndDisplayButton("DirectorySelect", 100, 50, uiWidth-200, 40, directorySelectButtonLAF);
 
-                int installWidth = 200;
+                // Add a callback for when the button is clicked
+                directorySelectButton->onClick = [this, project]() {
+                    // Create a FileChooser object
+                    juce::FileChooser chooser("Select a directory",
+#if JUCE_MAC
+                        juce::File("~/Music/Audio Music Apps/Samples/"),
+#else
+                        juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory),
+#endif
+                        "", // wildcard filter
+                        true); // use native version if available
 
-                // Create a button to install
-                mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 60, installButtonLAF);
+                    // Show the directory selection dialog
+                    if (chooser.browseForDirectory()) {
+                        // If a directory was selected, get the selected directory
+                        juce::File selectedDirectory = chooser.getResult();
 
+                        // Append the project name to the selected directory
+                        juce::File finalDirectory = selectedDirectory.getChildFile(project);
+
+                        // Store the final directory path in currentPath
+                        currentPath = finalDirectory.getFullPathName();
+
+                        // You can now use currentPath in your code
+                    }
+                    };
 
             }
+
+            // Install button width
+            int installWidth = 200;
+
+            // Create a button to install and store the returned pointer in a variable
+            installButton = mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 60, installButtonLAF);
+
+            // Add a callback for when the button is clicked
+            installButton->onClick = [this]() {
+                DBG("Install button clicked!");
+                };
             
         }
         catch (const std::runtime_error& e) {
@@ -180,6 +215,8 @@ public:
         }
     }
 
+
+    
 
     void shutdown() override
     {
@@ -263,6 +300,10 @@ private:
     InstallButtonLookAndFeel* installButtonLAF = nullptr;
     
     juce::String currentPath;
+
+
+    juce::TextButton* directorySelectButton = nullptr;
+    juce::TextButton* installButton = nullptr;
 };
 
 

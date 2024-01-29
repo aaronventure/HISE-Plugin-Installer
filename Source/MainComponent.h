@@ -15,7 +15,7 @@ public:
 
     void MainComponent::setTitle(const juce::String& newTitle);
     void setBackgroundImage(const juce::Image& newBackground);
-    void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height, juce::LookAndFeel* lookAndFeel);
+    juce::TextButton* MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height, juce::LookAndFeel* lookAndFeel);
     void paint(juce::Graphics& g) override;
     void resized() override;
     void setMessage(const juce::String& message);

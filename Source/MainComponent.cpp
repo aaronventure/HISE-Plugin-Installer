@@ -1,5 +1,6 @@
 #include "MainComponent.h"
 #include "CustomLookAndFeel.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 //==============================================================================
 
@@ -22,7 +23,7 @@ MainComponent::~MainComponent()
 
 //==============================================================================
 
-void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height, juce::LookAndFeel* lookAndFeel)
+juce::TextButton* MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height, juce::LookAndFeel* lookAndFeel)
 {
     // Create a Button object
     juce::TextButton* myButton = new juce::TextButton(buttonName);
@@ -41,6 +42,9 @@ void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x
 
     // Add the button to the array
     buttons.add(myButton);
+
+    // Return a pointer to the created button
+    return myButton;
 }
 
 
