@@ -42,7 +42,7 @@ Info loadInfo() {
     if (configFile.exists()) {
         juce::ZipFile zip(configFile);
 
-        int index = zip.getIndexOfFileName("Info.json");
+        int index = zip.getIndexOfFileName("info.json");
         if (index < 0) {
             throw std::runtime_error("Could not find Info.json in zip file.");
         }
@@ -98,9 +98,31 @@ public:
             juce::String version = info.jsonData.getProperty("Version", "Unknown");
             juce::String company = info.jsonData.getProperty("Company", "Unknown");
 
+            // Get the HideTitle property from the Info object
+            int hideTitle = info.jsonData.getProperty("HideTitle", 0);
+
             // Set the title of the MainWindow
-            juce::String title = "Installer for " + project + " by " + company + " (" + version + ")";
-            mainWindow->setName(title);
+            if (hideTitle == 1) {
+                mainWindow->setName("");
+            }
+            else {
+                juce::String title = company + " - " + project + " (" + version + ")";
+                mainWindow->setName(title);
+            }
+
+            // Check for background.png in Config.dat
+            juce::File appDirectory = juce::File::getSpecialLocation(juce::File::currentApplicationFile).getParentDirectory();
+            juce::File configFile = appDirectory.getChildFile("Config.dat");
+            juce::ZipFile zip(configFile);
+            int index = zip.getIndexOfFileName("background.png");
+            if (index >= 0) {
+                std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(index));
+                juce::Image background = juce::ImageFileFormat::loadFrom(*stream);
+                if (!background.isNull()) {
+                    // Assuming `mainComponent` is a Component
+                    mainComponent->setBackgroundImage(background);
+                }
+            }
 
             // Check for Plugins.dat
             juce::File pluginsFile = juce::File::getSpecialLocation(juce::File::currentApplicationFile).getParentDirectory().getChildFile("Plugins.dat");

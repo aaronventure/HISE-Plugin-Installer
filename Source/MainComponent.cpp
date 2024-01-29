@@ -10,6 +10,12 @@ MainComponent::MainComponent()
     setSize(900, 300);
 }
 
+void MainComponent::setBackgroundImage(const juce::Image& newBackground)
+{
+    backgroundImage = newBackground;
+    repaint();
+}
+
 MainComponent::~MainComponent()
 {
 }

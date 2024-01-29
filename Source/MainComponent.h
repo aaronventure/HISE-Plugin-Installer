@@ -12,6 +12,9 @@ class MainComponent  : public juce::Component
 public:
     //==============================================================================
     MainComponent();
+
+    void MainComponent::setTitle(const juce::String& newTitle);
+    void setBackgroundImage(const juce::Image& newBackground);
     void paint(juce::Graphics& g) override;
     void resized() override;
     void setMessage(const juce::String& message);
@@ -21,6 +24,8 @@ public:
 private:
     //==============================================================================
     juce::Label messageLabel;
+    juce::Image backgroundImage;
+    juce::String title = "Installer"; // Default title
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
