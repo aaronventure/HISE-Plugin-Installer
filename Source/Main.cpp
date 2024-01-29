@@ -147,7 +147,30 @@ public:
             if (results.size() > 0) {
                 hasSamples = 1;
 
-                mainComponent->createAndDisplayButton("DirectorySelect", 200, 200, 100, 50);
+                // Initialize the current path
+#if JUCE_MAC
+                currentPath = "~/Music/Audio Music Apps/Samples/" + company + "/" + project;
+#else
+                currentPath = juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory).getFullPathName() + "/" + company + "/" + project;
+#endif
+
+                // Create a LookAndFeel object
+                directorySelectButtonLAF = new DirectorySelectButtonLookAndFeel(currentPath);
+                installButtonLAF = new InstallButtonLookAndFeel();
+
+                // Get the width and height of the UI
+                int uiWidth = mainComponent->getWidth();
+                int uiHeight = mainComponent->getHeight();
+
+                // Create a button to select the directory
+                mainComponent->createAndDisplayButton("DirectorySelect", 100, 50, uiWidth-200, 40, directorySelectButtonLAF);
+
+                int installWidth = 200;
+
+                // Create a button to install
+                mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 60, installButtonLAF);
+
+
             }
             
         }
@@ -160,13 +183,13 @@ public:
 
     void shutdown() override
     {
-        // Add your application's shutdown code here..
+        mainWindow = nullptr; // (deletes our window
 
-        mainWindow = nullptr; // (deletes our window)
+        delete directorySelectButtonLAF; // Delete the LookAndFeel object
+        directorySelectButtonLAF = nullptr; // Set the pointer to nullptr
 
-        // Pause the application before it exits
-        std::cout << "Press enter to exit...";
-        std::cin.get();
+        delete installButtonLAF; // Delete the LookAndFeel object
+        installButtonLAF = nullptr; // Set the pointer to nullptr
     }
 
     //==============================================================================
@@ -235,6 +258,11 @@ public:
 
 private:
     std::unique_ptr<MainWindow> mainWindow;
+
+    DirectorySelectButtonLookAndFeel* directorySelectButtonLAF = nullptr;
+    InstallButtonLookAndFeel* installButtonLAF = nullptr;
+    
+    juce::String currentPath;
 };
 
 

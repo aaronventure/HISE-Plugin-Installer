@@ -192,4 +192,83 @@ public:
         // Call the base class implementation if you want to keep the default look and feel
         return LookAndFeel_V4::createDocumentWindowButton(buttonType);
     }
+
+};
+
+class DirectorySelectButtonLookAndFeel : public juce::LookAndFeel_V4
+{
+public:
+    DirectorySelectButtonLookAndFeel(juce::String& path) : currentPath(path) {}
+
+    void drawButtonBackground(juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
+        bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        g.setColour(shouldDrawButtonAsDown ? juce::Colour(0xffe9e9e9)
+            : shouldDrawButtonAsHighlighted ? juce::Colour(0xffd2d2d2)
+            : juce::Colour(0xffbababa));
+
+        juce::Rectangle<int> rect(0, 0, button.getWidth(), button.getHeight());
+        g.drawRect(rect, 1);
+
+    }
+
+    void drawButtonText(juce::Graphics& g, juce::TextButton& button, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        // Draw the button text in the center of the button
+        g.setColour(shouldDrawButtonAsDown ? juce::Colour(0xffe9e9e9)
+            : shouldDrawButtonAsHighlighted ? juce::Colour(0xffd2d2d2)
+            : juce::Colour(0xffbababa));
+
+        // Create a Typeface from the binary data
+        juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(GlobalFontData::Controls, GlobalFontData::ControlsSize);
+
+        // Create a Font from the Typeface
+        juce::Font font(typeface);
+
+        // Use the font
+        g.setFont(font.withPointHeight(16.0f));
+
+        // Use the current path as the button text
+        g.drawText(currentPath, button.getLocalBounds(), juce::Justification::centred, true);
+    }
+
+private:
+    juce::String& currentPath;
+};
+
+class InstallButtonLookAndFeel : public juce::LookAndFeel_V4
+{
+public:
+
+    void drawButtonBackground(juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
+        bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        g.setColour(shouldDrawButtonAsDown ? juce::Colour(0xffe9e9e9)
+            : shouldDrawButtonAsHighlighted ? juce::Colour(0xffd2d2d2)
+            : juce::Colour(0xffbababa));
+
+        juce::Rectangle<int> rect(0, 0, button.getWidth(), button.getHeight());
+        g.drawRect(rect, 2);
+
+    }
+
+    void drawButtonText(juce::Graphics& g, juce::TextButton& button, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        // Draw the button text in the center of the button
+        g.setColour(shouldDrawButtonAsDown ? juce::Colour(0xffe9e9e9)
+            : shouldDrawButtonAsHighlighted ? juce::Colour(0xffd2d2d2)
+            : juce::Colour(0xffbababa));
+
+        // Create a Typeface from the binary data
+        juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(GlobalFontData::Controls, GlobalFontData::ControlsSize);
+
+        // Create a Font from the Typeface
+        juce::Font font(typeface);
+
+        // Use the font
+        g.setFont(font.withPointHeight(26.0f));
+
+        // Use the current path as the button text
+        g.drawText("Install", button.getLocalBounds(), juce::Justification::centred, true);
+    }
 };

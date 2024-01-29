@@ -22,13 +22,19 @@ MainComponent::~MainComponent()
 
 //==============================================================================
 
-void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height)
+void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height, juce::LookAndFeel* lookAndFeel)
 {
     // Create a Button object
     juce::TextButton* myButton = new juce::TextButton(buttonName);
 
     // Set the button's position and size
     myButton->setBounds(x, y, width, height);
+
+    // Set the LookAndFeel for the button
+    if (lookAndFeel != nullptr)
+    {
+        myButton->setLookAndFeel(lookAndFeel);
+    }
 
     // Add the button to the interface
     addAndMakeVisible(myButton);
@@ -38,11 +44,6 @@ void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x
 }
 
 
-void MainComponent::setTitle(const juce::String& newTitle)
-{
-    title = newTitle;
-    repaint();
-}
 
 
 void MainComponent::paint (juce::Graphics& g)
