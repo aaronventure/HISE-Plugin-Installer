@@ -166,7 +166,7 @@ public:
 
 
                 // Create a button to select the directory
-                directorySelectButton = mainComponent->createAndDisplayButton("DirectorySelect", 100, 50, uiWidth-200, 40, directorySelectButtonLAF);
+                directorySelectButton = mainComponent->createAndDisplayButton("DirectorySelect", 100, 50, uiWidth-200, 30, directorySelectButtonLAF);
 
                 // Add a callback for when the button is clicked
                 directorySelectButton->onClick = [this, project]() {
@@ -191,7 +191,7 @@ public:
                         // Store the final directory path in currentPath
                         currentPath = finalDirectory.getFullPathName();
 
-                        // You can now use currentPath in your code
+                        // You can now use currentPath elsewhere
                     }
                     };
 
@@ -201,7 +201,7 @@ public:
             int installWidth = 200;
 
             // Create a button to install and store the returned pointer in a variable
-            installButton = mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 60, installButtonLAF);
+            installButton = mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 50, installButtonLAF);
 
             // Add a callback for when the button is clicked
             installButton->onClick = [this, company, project]() {
@@ -220,6 +220,7 @@ public:
 
                 // Determine the destination directory
                 juce::File vst3Destination;
+
 #if JUCE_WINDOWS
                 vst3Destination = juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory)
                     .getChildFile("Common Files")
@@ -227,18 +228,49 @@ public:
                     .getChildFile(company)
                     .getChildFile(project);
 #elif JUCE_MAC
-                vst3Destination = juce::File("~").getChildFile("Library/Audio/Plug-Ins/VST3");
+                vst3Destination = juce::File("~").getChildFile("Library/Audio/Plug-Ins/VST3")
+                    .getChildFile(company)
+                    .getChildFile(project);
 #elif JUCE_LINUX
-                vst3Destination = juce::File("$HOME/.vst3");
+                vst3Destination = juce::File("$HOME/.vst3")
+                    .getChildFile(company)
+                    .getChildFile(project);
 #endif
 
-                // Extract .vst3 files
+                // Determine the destination directory for AAX
+                juce::File aaxDestination;
+
+#if JUCE_WINDOWS
+                aaxDestination = juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory)
+                    .getChildFile("Common Files")
+                    .getChildFile("Avid")
+                    .getChildFile("Audio")
+                    .getChildFile("Plug-Ins")
+                    .getChildFile(company)
+                    .getChildFile(project);
+#elif JUCE_MAC
+                vst3Destination = juce::File("Macintosh HD/Library/Application Support/Avid/Audio/Plug-Ins")
+                    .getChildFile(company)
+                    .getChildFile(project);
+#elif JUCE_LINUX
+                vst3Destination = juce::File("$HOME/.vst3")
+                    .getChildFile(company)
+                    .getChildFile(project);
+#endif
+
+                // Extract .vst3 files and .aaxplugin folders
                 for (int i = 0; i < zip.getNumEntries(); ++i) {
                     const juce::ZipFile::ZipEntry* entry = zip.getEntry(i);
-                    if (entry && entry->filename.endsWith(".vst3")) {
+                    if (entry) {
                         std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(i));
                         if (stream) {
-                            juce::File outputFile = vst3Destination.getChildFile(entry->filename);
+                            juce::File outputFile;
+                            if (entry->filename.endsWith(".vst3")) {
+                                outputFile = vst3Destination.getChildFile(entry->filename);
+                            }
+                            else if (entry->filename.contains(".aaxplugin/")) {
+                                outputFile = aaxDestination.getChildFile(entry->filename.fromLastOccurrenceOf(".aaxplugin/", false, true));
+                            }
                             outputFile.getParentDirectory().createDirectory(); // Create the directory
                             juce::FileOutputStream outputStream(outputFile);
                             if (outputStream.openedOk()) {
@@ -248,10 +280,10 @@ public:
                             else {
                                 DBG("Failed to open output stream for file: " + outputFile.getFullPathName());
                                 DBG("Error message: " + outputStream.getStatus().getErrorMessage());
+                                throw std::runtime_error("Failed to open output stream for file. Please run the installer as Administrator.");
                             }
                         }
                     }
-                }
 
                 };
             
