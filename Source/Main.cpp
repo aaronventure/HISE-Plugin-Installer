@@ -129,6 +129,27 @@ public:
             if (!pluginsFile.exists()) {
                 throw std::runtime_error("Plugins.dat not found.");
             }
+
+            //===========================
+
+            // Check for Samples archives and set up the directory browser
+            // Set up an array to store the results
+            juce::Array<juce::File> results;
+
+            // Find .dat files with "Samples" or "samples" in their names
+            appDirectory.findChildFiles(results, juce::File::findFiles, false, "*Samples*.dat");
+            appDirectory.findChildFiles(results, juce::File::findFiles, false, "*samples*.dat");
+
+            // Initialize hasSamples to 0
+            int hasSamples = 0;
+
+            // If such files are found, set hasSamples to 1
+            if (results.size() > 0) {
+                hasSamples = 1;
+
+                mainComponent->createAndDisplayButton("DirectorySelect", 200, 200, 100, 50);
+            }
+            
         }
         catch (const std::runtime_error& e) {
             // Handle error

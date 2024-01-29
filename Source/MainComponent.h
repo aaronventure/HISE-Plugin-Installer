@@ -15,6 +15,7 @@ public:
 
     void MainComponent::setTitle(const juce::String& newTitle);
     void setBackgroundImage(const juce::Image& newBackground);
+    void createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height);
     void paint(juce::Graphics& g) override;
     void resized() override;
     void setMessage(const juce::String& message);
@@ -27,6 +28,7 @@ private:
     juce::Image backgroundImage;
     juce::String title = "Installer"; // Default title
 
+    juce::OwnedArray<juce::TextButton> buttons;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

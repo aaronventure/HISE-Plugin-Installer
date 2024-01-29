@@ -22,12 +22,37 @@ MainComponent::~MainComponent()
 
 //==============================================================================
 
+void MainComponent::createAndDisplayButton(const juce::String& buttonName, int x, int y, int width, int height)
+{
+    // Create a Button object
+    juce::TextButton* myButton = new juce::TextButton(buttonName);
+
+    // Set the button's position and size
+    myButton->setBounds(x, y, width, height);
+
+    // Add the button to the interface
+    addAndMakeVisible(myButton);
+
+    // Add the button to the array
+    buttons.add(myButton);
+}
+
+
+void MainComponent::setTitle(const juce::String& newTitle)
+{
+    title = newTitle;
+    repaint();
+}
+
+
 void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(juce::Colour(0xff222222));
 
     g.setColour(juce::Colours::white);
+
+    g.drawImageWithin(backgroundImage, 0, 0, getWidth(), getHeight(), juce::RectanglePlacement::stretchToFit);
 
     // Create a Typeface from the binary data
     juce::Typeface::Ptr typeface = juce::Typeface::createSystemTypefaceFor(GlobalFontData::Controls, GlobalFontData::ControlsSize);

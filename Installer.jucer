@@ -3,6 +3,9 @@
 <JUCERPROJECT id="nR0PlG" name="Installer" projectType="guiapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="BMrlsu" name="Installer">
+    <GROUP id="{84694F00-BA5F-8B00-72ED-DA2FE5F684CA}" name="Assets">
+      <FILE id="QI0RDg" name="baseicon.png" compile="0" resource="1" file="Assets/baseicon.png"/>
+    </GROUP>
     <GROUP id="{37647F3A-7926-0AC3-311F-44A552975EAE}" name="BinaryData">
       <FILE id="KclXSc" name="AdventProMedium.ttf" compile="0" resource="1"
             file="Fonts/AdventProMedium.ttf"/>
@@ -42,7 +45,8 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022" extraDefs="JUCE_DISPLAY_SPLASH_SCREEN=0">
+    <VS2022 targetFolder="Builds/VisualStudio2022" extraDefs="JUCE_DISPLAY_SPLASH_SCREEN=0"
+            smallIcon="QI0RDg" bigIcon="QI0RDg">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="Installer"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Installer"/>

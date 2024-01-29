@@ -112,7 +112,7 @@ public:
     };
 
 
-    // Style the close button here, then create a new instance of it in the createDocumentWindowButton() method
+    // Style the minimize button here, then create a new instance of it in the createDocumentWindowButton() method
     class CustomMinimizeButton : public juce::Button, private juce::Timer
     {
     public:
