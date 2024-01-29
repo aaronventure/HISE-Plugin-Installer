@@ -154,7 +154,7 @@ public:
         MainWindow (juce::String name)
             : DocumentWindow (name,
                               juce::Colour(0xff222222),
-                              DocumentWindow::closeButton)
+                              DocumentWindow::closeButton | DocumentWindow::minimiseButton)
         {
             setUsingNativeTitleBar (false);
             setContentOwned (new MainComponent(), true);
