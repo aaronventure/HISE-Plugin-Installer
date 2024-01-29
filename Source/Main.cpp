@@ -204,8 +204,55 @@ public:
             installButton = mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 60, installButtonLAF);
 
             // Add a callback for when the button is clicked
-            installButton->onClick = [this]() {
+            installButton->onClick = [this, company, project]() {
                 DBG("Install button clicked!");
+
+                loadInfo(); // check for Config.dat again
+
+                // Check for Plugins.dat
+                juce::File pluginsFile = juce::File::getSpecialLocation(juce::File::currentApplicationFile).getParentDirectory().getChildFile("Plugins.dat");
+                if (!pluginsFile.exists()) {
+                    throw std::runtime_error("Plugins.dat not found.");
+                }
+
+                // Create a ZipFile object
+                juce::ZipFile zip(pluginsFile);
+
+                // Determine the destination directory
+                juce::File vst3Destination;
+#if JUCE_WINDOWS
+                vst3Destination = juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory)
+                    .getChildFile("Common Files")
+                    .getChildFile("VST3")
+                    .getChildFile(company)
+                    .getChildFile(project);
+#elif JUCE_MAC
+                vst3Destination = juce::File("~").getChildFile("Library/Audio/Plug-Ins/VST3");
+#elif JUCE_LINUX
+                vst3Destination = juce::File("$HOME/.vst3");
+#endif
+
+                // Extract .vst3 files
+                for (int i = 0; i < zip.getNumEntries(); ++i) {
+                    const juce::ZipFile::ZipEntry* entry = zip.getEntry(i);
+                    if (entry && entry->filename.endsWith(".vst3")) {
+                        std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(i));
+                        if (stream) {
+                            juce::File outputFile = vst3Destination.getChildFile(entry->filename);
+                            outputFile.getParentDirectory().createDirectory(); // Create the directory
+                            juce::FileOutputStream outputStream(outputFile);
+                            if (outputStream.openedOk()) {
+                                outputStream.writeFromInputStream(*stream, -1);
+                                DBG("Extracted file: " + outputFile.getFullPathName());
+                            }
+                            else {
+                                DBG("Failed to open output stream for file: " + outputFile.getFullPathName());
+                                DBG("Error message: " + outputStream.getStatus().getErrorMessage());
+                            }
+                        }
+                    }
+                }
+
                 };
             
         }
