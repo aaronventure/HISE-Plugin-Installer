@@ -23,6 +23,8 @@
             resource="1" file="Fonts/SairaExtraCondensedSemiBold.ttf"/>
     </GROUP>
     <GROUP id="{D7CF8E01-B071-D9D0-A595-EDC9B9AE8093}" name="Source">
+      <FILE id="kCQeTP" name="InstallerResource.rc" compile="0" resource="1"
+            file="InstallerResource.rc"/>
       <FILE id="z6VFfK" name="GlobalFontData.h" compile="0" resource="0"
             file="Source/GlobalFontData.h"/>
       <FILE id="x056gY" name="CustomLookAndFeel.h" compile="0" resource="0"
