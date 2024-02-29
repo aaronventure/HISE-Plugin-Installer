@@ -14,7 +14,6 @@ MainComponent::MainComponent()
 
     addAndMakeVisible(currentTaskLabel);
     currentTaskLabel.setJustificationType(juce::Justification::centred);
-    currenttask
 
     setSize(900, 300);
 }

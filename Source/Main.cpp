@@ -149,13 +149,13 @@ public:
             // Initialize hasSamples to 0
             int hasSamples = 0;
 
-            // If such files are found, set hasSamples to 1
+            // If Samples files are found, set hasSamples to 1
             if (results.size() > 0) {
                 hasSamples = 1;
 
                 // Initialize the current path
 #if JUCE_MAC
-                currentPath = "~/Music/Audio Music Apps/Samples/" + company + "/" + project;
+                currentPath = "Library/Application Support/" + company + "/" + project + "/Samples";
 #else
                 currentPath = juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory).getFullPathName() + "/" + company + "/" + project;
 #endif
@@ -173,7 +173,7 @@ public:
                     // Create a FileChooser object
                     juce::FileChooser chooser("Select a directory",
 #if JUCE_MAC
-                        juce::File("~/Music/Audio Music Apps/Samples/"),
+                        juce::File("Library/Application Support/),
 #else
                         juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory),
 #endif
@@ -203,7 +203,7 @@ public:
             // Create a button to install and store the returned pointer in a variable
             installButton = mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 50, installButtonLAF);
 
-            // Add a callback for when the button is clicked
+            // Add a callback for when the install button is clicked
             installButton->onClick = [this, company, project, mainComponent]() {
                 DBG("Install button clicked!");
 
@@ -225,16 +225,16 @@ public:
                 vst3Destination = juce::File::getSpecialLocation(juce::File::globalApplicationsDirectory)
                     .getChildFile("Common Files")
                     .getChildFile("VST3")
-                    .getChildFile(company)
-                    .getChildFile(project);
+                    .getChildFile(company);
+                    //.getChildFile(project);
 #elif JUCE_MAC
                 vst3Destination = juce::File("~").getChildFile("Library/Audio/Plug-Ins/VST3")
-                    .getChildFile(company)
-                    .getChildFile(project);
+                    .getChildFile(company);
+                    //.getChildFile(project);
 #elif JUCE_LINUX
                 vst3Destination = juce::File("$HOME/.vst3")
-                    .getChildFile(company)
-                    .getChildFile(project);
+                    .getChildFile(company);
+                    //.getChildFile(project);
 #endif
 
                 // Determine the destination directory for AAX
@@ -246,16 +246,16 @@ public:
                     .getChildFile("Avid")
                     .getChildFile("Audio")
                     .getChildFile("Plug-Ins")
-                    .getChildFile(company)
-                    .getChildFile(project);
+                    .getChildFile(company);
+                    //.getChildFile(project);
 #elif JUCE_MAC
-                vst3Destination = juce::File("Macintosh HD/Library/Application Support/Avid/Audio/Plug-Ins")
-                    .getChildFile(company)
-                    .getChildFile(project);
+                vst3Destination = juce::File("Library/Application Support/Avid/Audio/Plug-Ins")
+                    .getChildFile(company);
+                    //.getChildFile(project);
 #elif JUCE_LINUX
                 vst3Destination = juce::File("$HOME/.vst3")
-                    .getChildFile(company)
-                    .getChildFile(project);
+                    .getChildFile(company);
+                    //.getChildFile(project);
 #endif
 
                 try {
@@ -295,7 +295,7 @@ public:
                     mainComponent->setMessage(e.what());
                 }
 
-                };
+             };
             
         }
         catch (const std::runtime_error& e) {
