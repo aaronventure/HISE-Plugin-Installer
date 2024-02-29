@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="nR0PlG" name="Installer" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" displaySplashScreen="1"
+              bundleIdentifier="com.ApocalypseAudio.Installer" maxBinaryFileSize="2097152"
+              postExportShellCommandWin="python %%1%%/requireAdministrator.py">
   <MAINGROUP id="BMrlsu" name="Installer">
     <GROUP id="{84694F00-BA5F-8B00-72ED-DA2FE5F684CA}" name="Assets">
       <FILE id="QI0RDg" name="baseicon.png" compile="0" resource="1" file="Assets/baseicon.png"/>
@@ -23,7 +25,7 @@
             resource="1" file="Fonts/SairaExtraCondensedSemiBold.ttf"/>
     </GROUP>
     <GROUP id="{D7CF8E01-B071-D9D0-A595-EDC9B9AE8093}" name="Source">
-      <FILE id="kCQeTP" name="InstallerResource.rc" compile="0" resource="1"
+      <FILE id="rLrLtI" name="InstallerResource.rc" compile="0" resource="1"
             file="InstallerResource.rc"/>
       <FILE id="z6VFfK" name="GlobalFontData.h" compile="0" resource="0"
             file="Source/GlobalFontData.h"/>

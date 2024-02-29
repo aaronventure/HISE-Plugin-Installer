@@ -25,6 +25,9 @@ public:
 private:
     //==============================================================================
     juce::Label messageLabel;
+    juce::Label currentTaskLabel;
+
+
     juce::Image backgroundImage;
 
     juce::String title = "Installer"; // Default title

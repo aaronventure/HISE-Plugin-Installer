@@ -6,8 +6,16 @@
 
 MainComponent::MainComponent()
 {
+
+
+
     addAndMakeVisible(messageLabel);
     messageLabel.setJustificationType(juce::Justification::centred);
+
+    addAndMakeVisible(currentTaskLabel);
+    currentTaskLabel.setJustificationType(juce::Justification::centred);
+    currenttask
+
     setSize(900, 300);
 }
 

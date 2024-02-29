@@ -204,7 +204,7 @@ public:
             installButton = mainComponent->createAndDisplayButton("Install", (uiWidth - installWidth) / 2, 200, installWidth, 50, installButtonLAF);
 
             // Add a callback for when the button is clicked
-            installButton->onClick = [this, company, project]() {
+            installButton->onClick = [this, company, project, mainComponent]() {
                 DBG("Install button clicked!");
 
                 loadInfo(); // check for Config.dat again
@@ -258,32 +258,42 @@ public:
                     .getChildFile(project);
 #endif
 
-                // Extract .vst3 files and .aaxplugin folders
-                for (int i = 0; i < zip.getNumEntries(); ++i) {
-                    const juce::ZipFile::ZipEntry* entry = zip.getEntry(i);
-                    if (entry) {
-                        std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(i));
-                        if (stream) {
-                            juce::File outputFile;
-                            if (entry->filename.endsWith(".vst3")) {
-                                outputFile = vst3Destination.getChildFile(entry->filename);
-                            }
-                            else if (entry->filename.contains(".aaxplugin/")) {
-                                outputFile = aaxDestination.getChildFile(entry->filename.fromLastOccurrenceOf(".aaxplugin/", false, true));
-                            }
-                            outputFile.getParentDirectory().createDirectory(); // Create the directory
-                            juce::FileOutputStream outputStream(outputFile);
-                            if (outputStream.openedOk()) {
-                                outputStream.writeFromInputStream(*stream, -1);
-                                DBG("Extracted file: " + outputFile.getFullPathName());
-                            }
-                            else {
-                                DBG("Failed to open output stream for file: " + outputFile.getFullPathName());
-                                DBG("Error message: " + outputStream.getStatus().getErrorMessage());
-                                throw std::runtime_error("Failed to open output stream for file. Please run the installer as Administrator.");
+                try {
+                    // Extract .vst3 files and .aaxplugin folders
+                    for (int i = 0; i < zip.getNumEntries(); ++i) {
+                        const juce::ZipFile::ZipEntry* entry = zip.getEntry(i);
+                        if (entry) {
+                            std::unique_ptr<juce::InputStream> stream(zip.createStreamForEntry(i));
+                            if (stream) {
+                                juce::File outputFile;
+                                if (entry->filename.endsWith(".vst3")) {
+                                    outputFile = vst3Destination.getChildFile(entry->filename);
+                                }
+                                else if (entry->filename.contains(".aaxplugin/")) {
+                                    outputFile = aaxDestination.getChildFile(entry->filename.fromLastOccurrenceOf(".aaxplugin/", false, true));
+                                }
+                                // Check if the directory creation was successful
+                                if (!outputFile.getParentDirectory().createDirectory()) {
+                                    throw std::runtime_error(("Failed to create directory: " + outputFile.getParentDirectory().getFullPathName()).toStdString());
+                                }
+                                juce::FileOutputStream outputStream(outputFile);
+                                if (outputStream.openedOk()) {
+                                    outputStream.writeFromInputStream(*stream, -1);
+                                    DBG("Extracted file: " + outputFile.getFullPathName());
+                                }
+                                else {
+                                    DBG("Failed to open output stream for file: " + outputFile.getFullPathName());
+                                    DBG("Error message: " + outputStream.getStatus().getErrorMessage());
+                                    throw std::runtime_error("Failed to open output stream for file. Please run the installer as Administrator.");
+                                }
                             }
                         }
                     }
+                }
+                catch (const std::runtime_error& e) {
+                    // Handle error
+                    mainComponent->setMessage(e.what());
+                }
 
                 };
             
