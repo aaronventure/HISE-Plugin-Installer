@@ -10,13 +10,21 @@ The app was built with JUCE.
 
 1. Build on your system. Change the icon or font if you want, you'll have to do it in Projucer. Create a deployment directory and drop the built .exe in there.
 2. Create Config.dat in the deployment directory. It's a zip file with a renamed extension to prevent automatic unarchiving. Config.dat should contain:
-   -  info.json \* {
-      "Project": "ProductName",
-      "Company": "CompanyName",
-      "Version": "1.0.0"
-      }
-   -  optionally background.png (this allows for dynamic GUI backgorunds)
+   -  info.json
+   ```
+    {
+        "Project": "ProductName",
+        "Company": "CompanyName",
+        "Version": "1.0.0"
+    }
+   ```
+   -  optionally background.png, 900 x 300 pixels (this allows for dynamic GUI backgorunds)
 3. Zip your plugins into Plugins.dat.
 4. If you have samples, zip the .chx monoliths into Samples\*.dat files, each up to 2GB max.
 5. Zip your AppData payload into AppData.dat,
 6. Run the Installer.exe to test it.
+
+## Notes
+
+-  You can build the installer using the Build scripts.
+-  Instead of opening Projucer and manually resaving, launch the Windows VS2022 project using the Resave script. It takes care of setting the UAC Execution Level for the Projucer-generated project file. This allows the built executable to request admin priviliges by default, which are necessary for writing to protected directories like `/Program Files/Common Files/`
